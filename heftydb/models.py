@@ -1,0 +1,108 @@
+import typing
+
+import pydantic
+from pydantic.fields import ModelField
+
+T = typing.TypeVar("T")
+
+
+class HeftyField:
+    def __init__(self, field, field_obj, obj_name):
+        self.__field = field
+        self.__field_obj = field_obj
+        self.__obj = obj_name
+        self.__parsed_obj = obj_name.parse_obj(field_obj.__dict__)
+
+    def add(self, db, *args):
+        # тут надо не ток для листов сделать
+        if "typing.List" not in str(self.__field.outer_type_):
+            raise RuntimeError("не лист добавлять нельзя...")
+        current_value: typing.Optional[
+            typing.List[typing.Any]
+        ] = self.__field_obj.dict()[self.__field.name]
+        if current_value is None:
+            current_value = list(args)
+        else:
+            current_value.extend(args)
+        self.__field_obj.__dict__[self.__field.name] = current_value
+        db.update(
+            self.__parsed_obj, self.__field_obj.__dict__["__id"],
+        )
+
+    def __iter__(self):
+        return iter(self.__field_obj.__dict__[self.__field.name])
+
+    def __repr__(self):
+        item = self.__field_obj.dict()[self.__field.name]
+        if isinstance(item, dict):
+            return " ".join(
+                f"{k}={v!r}"
+                for k, v in self.__field_obj.dict()[self.__field.name].items()
+            )
+        return repr(item)
+
+    def __getattr__(self, item):
+        if item == "pk":
+            return self.__field_obj.dict()[self.__field.name]["__id"]
+        return self.__field_obj.dict()[self.__field.name][item]
+
+
+class HeftyModel(pydantic.BaseModel):
+    @classmethod
+    def create(cls, db, **kwargs) -> T:
+        obj: T = cls.parse_obj(kwargs)
+        obj_id = db.write(obj)
+        setattr(obj, "__id", obj_id)
+        return obj
+
+    def save(self, db, kwargs) -> T:
+        obj: T = self.parse_obj(kwargs)
+        obj_id = db.write(obj)
+
+        # hak)
+        setattr(obj, "__id", obj_id)
+        return obj
+
+    def delete(self, db) -> None:
+        db.delete(table_name=self.__class__.__name__, to_delete=self.dict())
+
+    @classmethod
+    def get_one(
+        cls, db, return_raw: bool = False, with_refs: bool = True, **kwargs,
+    ) -> "HeftyModel":
+        return db.find_one(
+            find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
+        )
+
+    @classmethod
+    def get_all(
+        cls, db, return_raw: bool = False, with_refs: bool = True, **kwargs,
+    ) -> list:
+        # TODO: возвращаемый тип
+        return db.find_all(
+            find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
+        )
+
+    def __setattr__(self, key, value):
+        # vfvf ,kz...
+
+        if key == "__id":
+            self.__dict__[key] = value
+            return None
+        return super(HeftyModel, self).__setattr__(key, value)
+
+    def __getattribute__(self, item):
+        if item == "pk":
+            return super().__getattribute__("__id")
+
+        attr = super().__getattribute__(item)
+
+        if item in super().__dict__:
+            obj = super(HeftyModel, self)
+
+            # why obj.fields is good but obj.__fields__ == {}
+            field = obj.fields[item]
+            # TODO: тут наверное не только листы надо переделывать и вообще ужас какой то
+            if "typing.List" in str(field.outer_type_):
+                return HeftyField(field, obj, self.__class__)
+        return attr
