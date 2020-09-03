@@ -53,6 +53,13 @@ Track.create(album=fantasies, title="Sick Muse", position=2, db=db)
 # Fetch an instance, without loading a foreign key relationship on it.
 
 
+track = Track.get_one(title="The Bird", db=db)
+print(track)
+
+tracks = Track.get_all(album__name="Malibu", db=db)
+print(tracks[1])
+
+
 tracks = Track.get_all(album__date__year__number=2020, db=db)
 
 print(tracks)
