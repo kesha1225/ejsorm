@@ -3,7 +3,7 @@
 База данных (по совместительству orm) для json.
 
 
-Примеры - (/examples)[https://github.com/kesha1225/HeftyDB/tree/master/examples]
+Примеры - [/examples](https://github.com/kesha1225/HeftyDB/tree/master/examples)
 
 ```python
 from heftydb import HeftyDB, HeftyModel
