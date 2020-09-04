@@ -6,60 +6,57 @@ db.drop()
 
 # TODO: макс лен для строк например
 
-class Year(HeftyModel):
-    number: int
-    v: bool
-
-
-class Date(HeftyModel):
-    day: int
-    month: int
-    year: Year
+# class Year(HeftyModel):
+#     number: int
+#     v: bool
+#
+#
+# class Date(HeftyModel):
+#     day: int
+#     month: int
+#     year: Year
 
 
 class Album(HeftyModel):
+    __database__ = db
+
     name: str
-    date: Date
 
 
 class Track(HeftyModel):
+    __database__ = db
+
     album: Album
     title: str
     position: int
 
 
-# TODO мб убрать передачу дб и сделать метадату в классах
 # Create some records to work with.
 # malibu = Album.create(db=db, name="Malibu", date=Date(day=1, month=2, year=Year(number=2020, v=True))) так не пашет
 
-year = Year.create(number=2020, v=True, db=db)
+# year = Year.create(number=2020, v=True, db=db)
+#
+# date = Date.create(day=1, month=2, year=year, db=db)
+malibu = Album.create(db=db, name="Malibu")
 
-date = Date.create(day=1, month=2, year=year, db=db)
-malibu = Album.create(db=db, name="Malibu", date=date)
+Track.create(album=malibu, title="The Bird", position=1)
+Track.create(album=malibu, title="Heart don't stand a chance", position=2)
+Track.create(album=malibu, title="The Waters", position=3)
 
-Track.create(album=malibu, title="The Bird", position=1, db=db)
-Track.create(album=malibu, title="Heart don't stand a chance", position=2, db=db)
-Track.create(album=malibu, title="The Waters", position=3, db=db)
+# year = Year.create(number=2010, v=False, db=db)
+# date = Date.create(day=31, month=1, year=year, db=db)
 
-year = Year.create(number=2010, v=False, db=db)
-date = Date.create(day=31, month=1, year=year, db=db)
+fantasies = Album.create(name="Fantasies", db=db)
 
-fantasies = Album.create(name="Fantasies", db=db, date=date)
-
-Track.create(album=fantasies, title="Help I'm Alive", position=1, db=db)
-Track.create(album=fantasies, title="Sick Muse", position=2, db=db)
+Track.create(album=fantasies, title="Help I'm Alive", position=1)
+Track.create(album=fantasies, title="Sick Muse", position=2)
 # сделать везде поле __айди и в него пихать иначе никак
 
 # Fetch an instance, without loading a foreign key relationship on it.
 
 
-track = Track.get_one(title="The Bird", db=db)
+track = Track.get_one(title="The Bird")
 print(track)
 
-tracks = Track.get_all(album__name="Malibu", db=db)
+tracks = Track.get_all(album__name="Malibu")
 print(tracks[1])
-
-
-tracks = Track.get_all(album__date__year__number=2020, db=db)
-
-print(tracks)

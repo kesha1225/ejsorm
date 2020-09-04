@@ -3,6 +3,8 @@ import typing
 import pydantic
 from pydantic.fields import ModelField
 
+from heftydb.exceptions import HeftyError
+
 T = typing.TypeVar("T")
 
 
@@ -48,38 +50,40 @@ class HeftyField:
 
 
 class HeftyModel(pydantic.BaseModel):
+    __database__ = None
+
     @classmethod
-    def create(cls, db, **kwargs) -> T:
+    def create(cls, **kwargs) -> T:
         obj: T = cls.parse_obj(kwargs)
-        obj_id = db.write(obj)
+        obj_id = cls.__database__.write(obj)
         setattr(obj, "__id", obj_id)
         return obj
 
-    def save(self, db, kwargs) -> T:
+    def save(self, kwargs) -> T:
         obj: T = self.parse_obj(kwargs)
-        obj_id = db.write(obj)
+        obj_id = self.__database__.write(obj)
 
         # hak)
         setattr(obj, "__id", obj_id)
         return obj
 
-    def delete(self, db) -> None:
-        db.delete(table_name=self.__class__.__name__, to_delete=self.dict())
+    def delete(self) -> None:
+        self.__database__.delete(table_name=self.__class__.__name__, to_delete=self.dict())
 
     @classmethod
     def get_one(
-        cls, db, return_raw: bool = False, with_refs: bool = True, **kwargs,
+        cls, return_raw: bool = False, with_refs: bool = True, **kwargs,
     ) -> "HeftyModel":
-        return db.find_one(
+        return cls.__database__.find_one(
             find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
         )
 
     @classmethod
     def get_all(
-        cls, db, return_raw: bool = False, with_refs: bool = True, **kwargs,
+        cls, return_raw: bool = False, with_refs: bool = True, **kwargs,
     ) -> list:
         # TODO: возвращаемый тип
-        return db.find_all(
+        return cls.__database__.find_all(
             find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
         )
 

@@ -156,7 +156,9 @@ class HeftyDB:
                         if len(query) >= element_number + 1:
                             child_fields = query[: element_number + 2]
                             for field in child_fields[:-1]:
-                                child_obj = child_obj[field]
+                                child_obj = child_obj.get(field)
+                                if child_obj is None:
+                                    raise HeftyError(f"Object doesn't have field - {field}")
                         if query_filter is not None:
                             if child_field not in child_obj:
                                 continue
