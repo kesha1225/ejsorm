@@ -251,7 +251,7 @@ class HeftyDB:
                 if return_raw:
                     return [self._get_all_obj_refs(obj) for obj in current_table_data]
                 return [
-                    find_obj(**obj)
+                    find_obj(**self._get_all_obj_refs(obj))
                     for obj in current_table_data
                     if issubclass(find_obj, HeftyModel)
                 ]
