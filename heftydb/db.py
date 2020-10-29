@@ -76,7 +76,7 @@ class HeftyDB:
         return current_table_data
 
     def _get_table_data_from_obj(
-            self, find_obj: typing.Union[typing.Type[HeftyModel], str]
+        self, find_obj: typing.Union[typing.Type[HeftyModel], str]
     ):
         return self._get_table_data(
             find_obj if isinstance(find_obj, str) else find_obj.__name__
@@ -113,7 +113,7 @@ class HeftyDB:
             obj[obj_key] = []
             for found_obj_value in found_obj_values:
                 if isinstance(found_obj_value, str) and found_obj_value.startswith(
-                        "__reference"
+                    "__reference"
                 ):
                     obj[obj_key].append(
                         self._get_object_from_str_reference(found_obj_value)
@@ -138,9 +138,9 @@ class HeftyDB:
         for obj_key, obj_value in obj.items():
             for find_key, find_value in check_kwargs.items():
                 if (
-                        DOUBLE_UNDERSCORE in find_key
-                        and find_key != HEFTY_OBJECT_ID_FIELD
-                        and find_key not in checked_reference_keys
+                    DOUBLE_UNDERSCORE in find_key
+                    and find_key != HEFTY_OBJECT_ID_FIELD
+                    and find_key not in checked_reference_keys
                 ):
                     # obj = self._get_all_obj_refs(obj)
                     # хз может как то по кускам доставать
@@ -158,7 +158,9 @@ class HeftyDB:
                             for field in child_fields[:-1]:
                                 child_obj = child_obj.get(field)
                                 if child_obj is None:
-                                    raise HeftyError(f"Object doesn't have field - {field}")
+                                    raise HeftyError(
+                                        f"Object doesn't have field - {field}"
+                                    )
                         if query_filter is not None:
                             if child_field not in child_obj:
                                 continue
@@ -189,11 +191,11 @@ class HeftyDB:
         return bool(found and all(found) and len(found) == len(check_kwargs))
 
     def find_one(
-            self,
-            find_obj: typing.Union[typing.Type[HeftyModel], str],
-            return_raw: bool = False,
-            with_refs: bool = True,
-            **kwargs,
+        self,
+        find_obj: typing.Union[typing.Type[HeftyModel], str],
+        return_raw: bool = False,
+        with_refs: bool = True,
+        **kwargs,
     ) -> typing.Optional[typing.Union[HeftyObject, typing.Any]]:
         self._check_return_raw_and_get_refs(return_raw, with_refs)
         current_table_data = self._get_table_data_from_obj(find_obj)
@@ -234,11 +236,11 @@ class HeftyDB:
         return obj
 
     def find_all(
-            self,
-            find_obj: typing.Union[typing.Type[HeftyModel], str],
-            return_raw: bool = False,
-            with_refs: bool = True,
-            **kwargs,
+        self,
+        find_obj: typing.Union[typing.Type[HeftyModel], str],
+        return_raw: bool = False,
+        with_refs: bool = True,
+        **kwargs,
     ) -> typing.Optional[
         typing.Union[typing.List[typing.Union[HeftyObject, typing.Any]]]
     ]:
@@ -280,7 +282,7 @@ class HeftyDB:
         return f"__reference_{reference_table_title}_{reference_object_id}__"
 
     def _get_object_references_fields(
-            self, obj_class_fields: typing.Dict[str, ModelField]
+        self, obj_class_fields: typing.Dict[str, ModelField]
     ) -> typing.List[ModelField]:
         found_references = []
 
@@ -288,7 +290,7 @@ class HeftyDB:
             ref_field: ModelField
             current_ref_field = ref_field
             if isinstance(current_ref_field, ModelField) and isinstance(
-                    current_ref_field.type_, ModelMetaclass
+                current_ref_field.type_, ModelMetaclass
             ):
                 found_references.append(current_ref_field)
                 current_ref_field = self._get_object_references_fields(
@@ -312,6 +314,10 @@ class HeftyDB:
                     f"Mapping value type must be in {AVAILABLE_MAPPING_TYPES_VALUE}, got {field.type_}"
                 )
 
+    @staticmethod
+    def is_reference(ref_data_to_find):
+        return isinstance(ref_data_to_find, str)
+
     def _add_to_table(self, table_name: str, obj: HeftyObject, obj_class: HeftyModel):
         # todo: решить че делать с диктовыми референасами (нужны ли они...)
 
@@ -333,9 +339,18 @@ class HeftyDB:
 
                 obj[ref_key] = []
                 for ref_data_to_find in refs_data_to_find:
+                    if self.is_reference(ref_data_to_find):
+                        # https://www.youtube.com/watch?v=MF_cYq4EixU
+                        obj[ref_key] = ref_data_to_find
+                        break
+
                     reference_in_db: list = self.find_all(
-                        current_ref_table_name, **ref_data_to_find, return_raw=True, with_refs=False
+                        current_ref_table_name,
+                        **ref_data_to_find,
+                        return_raw=True,
+                        with_refs=False,
                     )
+
                     if not reference_in_db:
                         reference_obj_id = self._add_to_table(
                             current_ref_table_name, ref_data_to_find, obj_class,

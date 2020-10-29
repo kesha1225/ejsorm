@@ -43,7 +43,7 @@ def test_get():
     assert len(tracks) == 2
     assert tracks[0].title == "Help I'm Alive"
     assert tracks[1].position == 2
-    assert tracks[1].album == Album(name='Fantasies', __id=1)
+    assert tracks[1].album == Album(name="Fantasies", __id=1)
 
     tracks = Track.get_all(album__name__iexact="fantasies")
     assert len(tracks) == 2

@@ -59,8 +59,8 @@ class HeftyModel(pydantic.BaseModel):
         setattr(obj, "__id", obj_id)
         return obj
 
-    def save(self, kwargs) -> T:
-        obj: T = self.parse_obj(kwargs)
+    def save(self) -> T:
+        obj: T = self.parse_obj(self.dict())
         obj_id = self.__database__.write(obj)
 
         # hak)
@@ -68,7 +68,9 @@ class HeftyModel(pydantic.BaseModel):
         return obj
 
     def delete(self) -> None:
-        self.__database__.delete(table_name=self.__class__.__name__, to_delete=self.dict())
+        self.__database__.delete(
+            table_name=self.__class__.__name__, to_delete=self.dict()
+        )
 
     @classmethod
     def get_one(

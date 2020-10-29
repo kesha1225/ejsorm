@@ -1,4 +1,4 @@
-__version__ = '0.0.1'
+__version__ = "0.0.1"
 
 from .db import HeftyDB
 from .models import HeftyModel

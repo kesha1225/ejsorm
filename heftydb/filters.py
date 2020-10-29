@@ -17,9 +17,7 @@ def greater_than_equal(
     return obj[check_key] >= filter_value
 
 
-def less_than_equal(
-    obj: HeftyObject, check_key: str, filter_value: typing.Any
-) -> bool:
+def less_than_equal(obj: HeftyObject, check_key: str, filter_value: typing.Any) -> bool:
     return obj[check_key] <= filter_value
 
 

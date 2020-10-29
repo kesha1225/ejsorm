@@ -1,6 +1,13 @@
 # HeftyDB
 
-База данных (по совместительству orm) для json.
+База данных (по совместительству orm), основанная на json.
+
+
+TODO:
+- order_by
+- sort skip limit
+- range, regex, iregex
+- other table
 
 
 Примеры - [/examples](https://github.com/kesha1225/HeftyDB/tree/master/examples)
