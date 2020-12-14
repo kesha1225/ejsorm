@@ -55,5 +55,5 @@ Track.create(album=fantasies, title="Sick Muse", position=2)
 
 track = Track.get_one(title="The Bird")
 print(track)
-tracks = Track.get_all(album__name="Fantasies")
+tracks = Track.get_all(album__name="Fantasies").order_by(Track.position, order_type="DESC")
 print(tracks)
