@@ -217,6 +217,7 @@ class HeftyDB:
 
         if with_refs:
             obj = self._get_all_obj_refs(obj)
+
         if return_raw:
             return obj
 

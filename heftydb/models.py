@@ -1,9 +1,9 @@
 import typing
 
 import pydantic
-from pydantic.fields import ModelField
+from pydantic.main import ModelMetaclass
 
-from heftydb.exceptions import HeftyError
+from heftydb.response import ResponseModel
 
 T = typing.TypeVar("T")
 
@@ -49,7 +49,38 @@ class HeftyField:
         return self.__field_obj.dict()[self.__field.name][item]
 
 
-class HeftyModel(pydantic.BaseModel):
+class MetaField:
+    def __init__(
+        self, field, local_fields, stack: typing.Optional[typing.List[str]] = None
+    ):
+        self.stack = stack
+
+        if stack is None:
+            self.stack = []
+        self.stack.append(field.name)
+
+        self.field = field
+        self.local_fields = local_fields
+
+    def __getattr__(self, item):
+
+        return MetaField(
+            field=self.local_fields[self.field.name].type_.__fields__[item],
+            local_fields=self.local_fields,
+            stack=self.stack,
+        )
+
+
+class HeftyModelmeta(ModelMetaclass):
+    def __getattr__(self, item):
+        local_fields = self.__fields__
+
+        if item in local_fields:
+            return MetaField(field=local_fields[item], local_fields=local_fields)
+        return super().__getattribute__(item)
+
+
+class HeftyModel(pydantic.BaseModel, metaclass=HeftyModelmeta):
     __database__ = None
 
     @classmethod
@@ -83,10 +114,12 @@ class HeftyModel(pydantic.BaseModel):
     @classmethod
     def get_all(
         cls, return_raw: bool = False, with_refs: bool = True, **kwargs,
-    ) -> list:
+    ) -> ResponseModel:
         # TODO: возвращаемый тип
-        return cls.__database__.find_all(
-            find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
+        return ResponseModel(
+            cls.__database__.find_all(
+                find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
+            )
         )
 
     def __setattr__(self, key, value):
