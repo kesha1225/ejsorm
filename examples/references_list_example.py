@@ -39,6 +39,6 @@ track = Track.create(album=album, title="rok pesnya)", position=1, genres=[rock,
 
 print(Track.get_one(genres=[rock, punk]))
 
-print(Track.get_one(genres__contains=punk))
+print(Track.get_one(genres__contains=punk, album__name="eee rok"))
 
 print(Track.get_one(genres__contains=pop))
