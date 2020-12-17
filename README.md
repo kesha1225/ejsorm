@@ -4,9 +4,8 @@
 
 
 TODO:
-- order_by
 - sort skip limit
-- range, regex, iregex
+- range filter
 - other table
 
 
