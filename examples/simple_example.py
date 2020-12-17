@@ -1,22 +1,7 @@
-from typing import Optional
-
 from heftydb import HeftyDB, HeftyModel
-import pydantic
+
 db = HeftyDB("db.json")
 db.drop()
-
-
-# TODO: макс лен для строк например
-
-# class Year(HeftyModel):
-#     number: int
-#     v: bool
-#
-#
-# class Date(HeftyModel):
-#     day: int
-#     month: int
-#     year: Year
 
 
 class Album(HeftyModel):

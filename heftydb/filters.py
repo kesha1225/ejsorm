@@ -1,4 +1,5 @@
 import typing
+import re
 
 from ._types import HeftyObject
 
@@ -37,7 +38,17 @@ def iexact(obj: HeftyObject, check_key: str, filter_value: str) -> bool:
     return filter_value.lower() == obj[check_key].lower()
 
 
-# todo: range, regex, iregex
+def regex(obj: HeftyObject, check_key: str, filter_value: str, flags: int = 0) -> bool:
+    pattern = re.compile(filter_value, flags)
+    return pattern.match(obj[check_key]) is not None
+
+
+def iregex(obj: HeftyObject, check_key: str, filter_value: str, flags: int = 0) -> bool:
+    pattern = re.compile(filter_value, flags)
+    return pattern.match(obj[check_key]) is None
+
+
+# todo: range
 
 HEFTY_FILTERS: typing.Dict[
     str, typing.Callable[[HeftyObject, str, typing.Any], bool]
@@ -50,4 +61,6 @@ HEFTY_FILTERS: typing.Dict[
     "contains": contains,
     "icontains": icontains,
     "iexact": iexact,
+    "regex": regex,
+    "iregex": iregex,
 }

@@ -112,9 +112,7 @@ class HeftyDB:
             found_obj_values = obj_value if isinstance(obj_value, list) else [obj_value]
             obj[obj_key] = []
             for found_obj_value in found_obj_values:
-                if isinstance(found_obj_value, str) and found_obj_value.startswith(
-                    "__reference"
-                ):
+                if self.is_reference(found_obj_value):
                     obj[obj_key].append(
                         self._get_object_from_str_reference(found_obj_value)
                     )
@@ -126,7 +124,6 @@ class HeftyDB:
         return obj
 
     def _check_obj(self, obj: dict, check_kwargs: dict):
-        # todo: че делать если там лист с рефами
         # todo: sort skip limit
         found = []
         checked_reference_keys = []
@@ -233,6 +230,8 @@ class HeftyDB:
             # setattr(object_model, "__db", self)
             # не хочешь сетаттр? я его тебе прямо в регистры памяти суну тварь
             # object_model.__dict__["__db"] = self
+
+            # 17.12.2020 сверху я молодой и неопытный не знаю что надо филд создавать и туда уже совать
             return object_model
         return obj
 
@@ -317,10 +316,11 @@ class HeftyDB:
 
     @staticmethod
     def is_reference(ref_data_to_find):
-        return isinstance(ref_data_to_find, str)
+        return isinstance(ref_data_to_find, str) and ref_data_to_find.startswith("__reference")
 
     def _add_to_table(self, table_name: str, obj: HeftyObject, obj_class: HeftyModel):
         # todo: решить че делать с диктовыми референасами (нужны ли они...)
+        # нет не нужны, но туду пуст висит
 
         self._check_model_fields(obj_class.__fields__)
 
