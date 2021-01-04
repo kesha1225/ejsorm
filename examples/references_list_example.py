@@ -34,10 +34,15 @@ punk = Genre.create(title="punk")
 
 album = Album.create(name="eee rok")
 
-track = Track.create(album=album, title="rok pesnya)", position=1, genres=[rock, punk])
+track = Track.create(album=album, title="rok pesnya)", position=1, genres=[rock])
+track2 = Track.create(album=album, title="все жанры", position=1, genres=[rock, punk])
+
+# we can add element in list
+track2.genres.add(pop)
 
 
-print(Track.get_one(genres=[rock, punk]))
+print(Track.get_all())
+print(Track.get_one(genres=[rock, punk])) # None
 
 print(Track.get_one(genres__contains=punk, album__name="eee rok"))
 

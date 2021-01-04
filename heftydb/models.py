@@ -15,9 +15,10 @@ class HeftyField:
         self.__obj = obj_name
         self.__parsed_obj = obj_name.parse_obj(field_obj.__dict__)
 
-    def add(self, db, *args):
+    def add(self, *args):
         # тут надо не ток для листов сделать
-        if "typing.List" not in str(self.__field.outer_type_):
+        db = self.__obj.__database__
+        if not str(self.__field.outer_type_).startswith("typing.List"):
             raise RuntimeError("не лист добавлять нельзя...")
         current_value: typing.Optional[
             typing.List[typing.Any]
@@ -27,7 +28,10 @@ class HeftyField:
         else:
             current_value.extend(args)
         self.__field_obj.__dict__[self.__field.name] = current_value
-        db.update(
+
+        self.__parsed_obj = self.__obj.parse_obj(self.__field_obj.__dict__)
+
+        return db.update(
             self.__parsed_obj, self.__field_obj.__dict__["__id"],
         )
 

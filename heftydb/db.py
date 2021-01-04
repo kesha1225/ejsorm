@@ -368,15 +368,17 @@ class HeftyDB:
                                     current_ref_table_name, found_ref["__id"]
                                 )
                             )
-                obj[ref_key] = (
-                    obj[ref_key] if len(obj[ref_key]) > 1 else obj[ref_key][0]
-                )
+
+                if not str(ref_data.outer_type_).startswith("typing.List["):
+                    obj[ref_key] = (
+                        obj[ref_key] if len(obj[ref_key]) > 1 else obj[ref_key][0]
+                    )
         return self._save_element(table_name, obj)
 
     def delete(self, table_name: str, to_delete: HeftyObject):
         self._get_table_data(table_name).remove(to_delete)
 
-    def update(self, obj: HeftyModel, model_id: int):
+    def update(self, obj: HeftyModel, model_id: int) -> HeftyModel:
         old = self.find_one(
             obj.__class__.__name__,
             **{"__id": model_id},
@@ -385,6 +387,7 @@ class HeftyDB:
         )
         self.delete(obj.__class__.__name__, old)
         self.write(obj)
+        return obj
 
     def write(self, obj: HeftyModel):
         return self._add_to_table(
