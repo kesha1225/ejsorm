@@ -394,5 +394,5 @@ class HeftyDB:
             table_name=obj.__class__.__name__, obj_class=obj, obj=obj.dict(),
         )
 
-    def write_many(self):
-        pass
+    def write_many(self, objects: typing.List[HeftyModel]):
+        return [self.write(obj) for obj in objects]

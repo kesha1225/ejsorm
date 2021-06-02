@@ -16,7 +16,9 @@ class ResponseModel(list):
         self.response_data = response_data
 
     def order_by(
-        self, order_field: typing.Union["MetaField", typing.Any], order_type: typing.Union[str, OrderType] = OrderType.ASK
+        self,
+        order_field: typing.Union["MetaField", typing.Any],
+        order_type: typing.Union[str, OrderType] = OrderType.ASK,
     ):  # тут всегда MetaField str чтобы пучарм не ругал
         sort_list = []
         for item in self.response_data:

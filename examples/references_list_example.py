@@ -42,7 +42,7 @@ track2.genres.add(pop)
 
 
 print(Track.get_all())
-print(Track.get_one(genres=[rock, punk])) # None
+print(Track.get_one(genres=[rock, punk]))  # None
 
 print(Track.get_one(genres__contains=punk, album__name="eee rok"))
 
