@@ -1,9 +1,9 @@
 from typing import List
 
-from heftydb import HeftyDB, HeftyModel
+from ejsorm import Ejsorm, EJModel
 
 
-db = HeftyDB("db.json")
+db = Ejsorm("db.json")
 db.drop()
 
 

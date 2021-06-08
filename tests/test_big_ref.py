@@ -1,46 +1,46 @@
-from heftydb import HeftyDB, HeftyModel
+from ejsorm import Ejsorm, EJModel
 
-db = HeftyDB("test_db.json")
+db = Ejsorm("test_db.json")
 db.drop()
 
 
-class Model1(HeftyModel):
+class Model1(EJModel):
     __database__ = db
 
     value: int
 
 
-class Model2(HeftyModel):
+class Model2(EJModel):
     __database__ = db
 
     value: Model1
 
 
-class Model3(HeftyModel):
+class Model3(EJModel):
     __database__ = db
 
     value: Model2
 
 
-class Model4(HeftyModel):
+class Model4(EJModel):
     __database__ = db
 
     value: Model3
 
 
-class Model5(HeftyModel):
+class Model5(EJModel):
     __database__ = db
 
     value: Model4
 
 
-class Model6(HeftyModel):
+class Model6(EJModel):
     __database__ = db
 
     value: Model5
 
 
-class Model7(HeftyModel):
+class Model7(EJModel):
     __database__ = db
 
     value: Model6

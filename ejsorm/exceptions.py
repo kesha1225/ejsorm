@@ -1,0 +1,2 @@
+class EJError(Exception):
+    pass

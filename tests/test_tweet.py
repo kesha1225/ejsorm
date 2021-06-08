@@ -1,20 +1,20 @@
-from heftydb import HeftyDB, HeftyModel
+from ejsorm import Ejsorm, EJModel
 import datetime
 
-db = HeftyDB("test_db.json")
+db = Ejsorm("test_db.json")
 db.drop()
 
 
-class BaseModel(HeftyModel):
+class BaseModel(EJModel):
     __database__ = db
 
 
-class User(HeftyModel):
+class User(EJModel):
     __database__ = db
     username: str
 
 
-class Tweet(HeftyModel):
+class Tweet(EJModel):
     __database__ = db
     user: User
     message: str

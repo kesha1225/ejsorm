@@ -1,17 +1,17 @@
-from heftydb import HeftyDB, HeftyModel
+from ejsorm import Ejsorm, EJModel
 
 
-db = HeftyDB("test_db.json")
+db = Ejsorm("test_db.json")
 db.drop()
 
 
-class Album(HeftyModel):
+class Album(EJModel):
     __database__ = db
 
     name: str
 
 
-class Track(HeftyModel):
+class Track(EJModel):
     __database__ = db
 
     album: Album

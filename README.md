@@ -1,4 +1,4 @@
-# HeftyDB
+# ejsorm
 
 База данных (по совместительству orm), основанная на json.
 
@@ -9,22 +9,22 @@ TODO:
 - other table
 
 
-Примеры - [/examples](https://github.com/kesha1225/HeftyDB/tree/master/examples)
+Примеры - [/examples](https://github.com/kesha1225/ejsorm/tree/master/examples)
 
 ```python
-from heftydb import HeftyDB, HeftyModel
+from ejsorm import Ejsorm, EJModel
 
-db = HeftyDB("db.json")
+db = Ejsorm("db.json")
 db.drop()
 
 
-class Album(HeftyModel):
+class Album(EJModel):
     __database__ = db
 
     name: str
 
 
-class Track(HeftyModel):
+class Track(EJModel):
     __database__ = db
 
     album: Album
@@ -41,14 +41,12 @@ fantasies = Album.create(name="Fantasies")
 Track.create(album=fantasies, title="Help I'm Alive", position=1)
 Track.create(album=fantasies, title="Sick Muse", position=2)
 
-
 # Fetch an instance, without loading a foreign key relationship on it.
 track = Track.get_one(title="The Bird")
 
 # We have an album instance, but it only has the primary key populated
-print(track.album)       # Album(name='Malibu' __id=0) [sparse]
-print(track.album.pk)    # 1
-
+print(track.album)  # Album(name='Malibu' __id=0) [sparse]
+print(track.album.pk)  # 1
 
 # Load the relationship from the database
 
