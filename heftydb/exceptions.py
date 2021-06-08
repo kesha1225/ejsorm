@@ -1,2 +1,0 @@
-class HeftyError(Exception):
-    pass
