@@ -32,13 +32,24 @@ Track.create(album=malibu, title="The Waters", position=3)
 fantasies = Album.create(name="Fantasies", number=2)
 
 Track.create(album=fantasies, title="Help I'm Alive", position=1)
-Track.create(album=fantasies, title="Sick Muse", position=2)
+sm = Track.create(album=fantasies, title="Sick Muse", position=2)
 # сделать везде поле __айди и в него пихать иначе никак
 
 # Fetch an instance, without loading a foreign key relationship on it.
-
 
 track = Track.get_one(title="The Bird")
 print(track)
 tracks = Track.get_all(album__name="Fantasies").order_by(Track.position, order_type="DESC")
 print(tracks)
+
+db.commit()
+
+# update
+sm.title = "changed title"
+db.rollback()
+
+track = Track.get_one(title="changed title")
+print(track)  # None
+
+track = Track.get_one(title="Sick Muse")
+print(track)  # album=Album(name='Fantasies', __id=1) title='Sick Muse' position=2 __id=4

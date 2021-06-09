@@ -7,6 +7,8 @@ from ejsorm.response import ResponseModel
 
 T = typing.TypeVar("T")
 
+EJ_OBJECT_ID_FIELD = "__id"
+
 
 class EJField:
     def __init__(self, field, field_obj, obj_name):
@@ -32,7 +34,7 @@ class EJField:
         self.__parsed_obj = self.__obj.parse_obj(self.__field_obj.__dict__)
 
         return db.update(
-            self.__parsed_obj, self.__field_obj.__dict__["__id"],
+            self.__parsed_obj, self.__field_obj.__dict__[EJ_OBJECT_ID_FIELD],
         )
 
     def __iter__(self):
@@ -49,7 +51,7 @@ class EJField:
 
     def __getattr__(self, item):
         if item == "pk":
-            return self.__field_obj.dict()[self.__field.name]["__id"]
+            return self.__field_obj.dict()[self.__field.name][EJ_OBJECT_ID_FIELD]
         return self.__field_obj.dict()[self.__field.name][item]
 
 
@@ -91,7 +93,7 @@ class EJModel(pydantic.BaseModel, metaclass=EJModelMeta):
     def create(cls, **kwargs) -> T:
         obj: T = cls.parse_obj(kwargs)
         obj_id = cls.__database__.write(obj)
-        setattr(obj, "__id", obj_id)
+        setattr(obj, EJ_OBJECT_ID_FIELD, obj_id)
         return obj
 
     def save(self) -> T:
@@ -99,7 +101,7 @@ class EJModel(pydantic.BaseModel, metaclass=EJModelMeta):
         obj_id = self.__database__.write(obj)
 
         # hak)
-        setattr(obj, "__id", obj_id)
+        setattr(obj, EJ_OBJECT_ID_FIELD, obj_id)
         return obj
 
     def delete(self) -> None:
@@ -129,14 +131,18 @@ class EJModel(pydantic.BaseModel, metaclass=EJModelMeta):
     def __setattr__(self, key, value):
         # vfvf ,kz...
 
-        if key == "__id":
+        if key == EJ_OBJECT_ID_FIELD:
             self.__dict__[key] = value
             return None
-        return super(EJModel, self).__setattr__(key, value)
+        # update
+        res = super(EJModel, self).__setattr__(key, value)
+        if EJ_OBJECT_ID_FIELD in self.__dict__:
+            self.__database__.update(self, self.__dict__[EJ_OBJECT_ID_FIELD])
+        return res
 
     def __getattribute__(self, item):
         if item == "pk":
-            return super().__getattribute__("__id")
+            return super().__getattribute__(EJ_OBJECT_ID_FIELD)
 
         attr = super().__getattribute__(item)
 
