@@ -17,9 +17,9 @@ AVAILABLE_MAPPING_TYPES_KEY = (str,)
 AVAILABLE_MAPPING_TYPES_VALUE = (str, int, float, None, bool)
 
 DEFAULT_DATA = [
-                {"__ejsorm__": "generated", "__temp__": []},
-                {"__table__": "__other", "__data__": {}},
-            ]
+    {"__ejsorm__": "generated", "__temp__": []},
+    {"__table__": "__other", "__data__": {}},
+]
 
 PK_FIELD = ModelField(
     name=EJ_OBJECT_ID_FIELD,
@@ -44,9 +44,7 @@ class Ejsorm:
         return self._data
 
     def drop(self):
-        self.__save(
-            DEFAULT_DATA
-        )
+        self.__save(DEFAULT_DATA)
         return self.data
 
     def _loads_data(self):
@@ -69,7 +67,7 @@ class Ejsorm:
 
     def __save_history(self):
         # TODO: понять почему только с файла грузится норм инфа
-        #self._data[0]["__temp__"] = self._loads_data()[1:]
+        # self._data[0]["__temp__"] = self._loads_data()[1:]
         self._data[0]["__temp__"] = self._data[1:]
 
     def commit(self):
@@ -114,7 +112,7 @@ class Ejsorm:
             )
 
     def _save_element(self, table_name: str, obj: EJObject) -> int:
-        #self.__save_history()
+        # self.__save_history()
         current_table_data = self._get_table_data(table_name)
         obj_id = len(current_table_data)
         obj.update({EJ_OBJECT_ID_FIELD: obj_id})
@@ -123,7 +121,7 @@ class Ejsorm:
 
         self._data[0]["__temp__"] = self._data[1:]
         self._data = DEFAULT_DATA
-        #self.__save(self.data)
+        # self.__save(self.data)
         return obj_id
 
     def _get_object_from_str_reference(self, str_reference: str):
@@ -390,7 +388,8 @@ class Ejsorm:
                         for found_ref in reference_in_db:
                             obj[ref_key].append(
                                 self._get_reference_name(
-                                    current_ref_table_name, found_ref[EJ_OBJECT_ID_FIELD]
+                                    current_ref_table_name,
+                                    found_ref[EJ_OBJECT_ID_FIELD],
                                 )
                             )
 

@@ -12,9 +12,7 @@ def less_than(obj: EJObject, check_key: str, filter_value: typing.Any) -> bool:
     return obj[check_key] < filter_value
 
 
-def greater_than_equal(
-    obj: EJObject, check_key: str, filter_value: typing.Any
-) -> bool:
+def greater_than_equal(obj: EJObject, check_key: str, filter_value: typing.Any) -> bool:
     return obj[check_key] >= filter_value
 
 
@@ -50,9 +48,7 @@ def iregex(obj: EJObject, check_key: str, filter_value: str, flags: int = 0) -> 
 
 # todo: range
 
-EJ_FILTERS: typing.Dict[
-    str, typing.Callable[[EJObject, str, typing.Any], bool]
-] = {
+EJ_FILTERS: typing.Dict[str, typing.Callable[[EJObject, str, typing.Any], bool]] = {
     "gt": greater_than,
     "lt": less_than,
     "gte": greater_than_equal,

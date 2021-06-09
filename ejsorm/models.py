@@ -34,7 +34,8 @@ class EJField:
         self.__parsed_obj = self.__obj.parse_obj(self.__field_obj.__dict__)
 
         return db.update(
-            self.__parsed_obj, self.__field_obj.__dict__[EJ_OBJECT_ID_FIELD],
+            self.__parsed_obj,
+            self.__field_obj.__dict__[EJ_OBJECT_ID_FIELD],
         )
 
     def __iter__(self):
@@ -111,7 +112,10 @@ class EJModel(pydantic.BaseModel, metaclass=EJModelMeta):
 
     @classmethod
     def get_one(
-        cls, return_raw: bool = False, with_refs: bool = True, **kwargs,
+        cls,
+        return_raw: bool = False,
+        with_refs: bool = True,
+        **kwargs,
     ) -> "EJModel":
         return cls.__database__.find_one(
             find_obj=cls, return_raw=return_raw, with_refs=with_refs, **kwargs
@@ -119,7 +123,10 @@ class EJModel(pydantic.BaseModel, metaclass=EJModelMeta):
 
     @classmethod
     def get_all(
-        cls, return_raw: bool = False, with_refs: bool = True, **kwargs,
+        cls,
+        return_raw: bool = False,
+        with_refs: bool = True,
+        **kwargs,
     ) -> ResponseModel:
         # TODO: возвращаемый тип
         return ResponseModel(
