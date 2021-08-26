@@ -1,1 +1,0 @@
-[{"__heftydb__":"generated"},{"__table__":"__other","__data__":{}},{"__table__":"User","__data__":[{"username":"charlie","__id":0},{"username":"huey","__id":1}]},{"__table__":"Tweet","__data__":[{"user":"__reference_User_0__","message":"My first tweet","created_date":"2020-10-29T20:25:20.470635","is_published":true,"__id":0}]}]

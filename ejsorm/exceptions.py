@@ -1,2 +1,0 @@
-class EJError(Exception):
-    pass
