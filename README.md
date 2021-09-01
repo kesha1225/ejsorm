@@ -1,6 +1,6 @@
-# ejsorm
+## reworking now... in 2.0 branch
 
-reworking now... in 2.0 branch
+# ejsorm
 
 База данных (по совместительству orm), основанная на json.
 
