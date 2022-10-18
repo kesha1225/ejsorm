@@ -1,0 +1,1 @@
+{"metadata": {"__EJSORM__": "GENERATED"}, "tables": {"user": {"1": {"name": "kolya"}, "2": {"name": "test1"}, "3": {"name": "test234"}, "4": {"name": "owneruser"}}, "Car": {"1": {"numberplate": "о001оо", "mark": "lada", "owner": "user_1"}, "2": {"numberplate": "о002оо", "mark": "makr", "owner": null}, "3": {"numberplate": "о003оо", "mark": "makr", "owner": "user_4"}}}}
